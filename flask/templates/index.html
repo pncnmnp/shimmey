@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body {
+            max-width: 38rem;
+            padding: 2rem;
+            margin: auto;
+        }
+    </style>
+    <script src="{{ url_for('static', filename='murmur.js') }}"></script>
+    <script type="text/javascript">
+        var k = {{ k | safe }}
+        var offsets = {{ offsets | safe }}
+        var len = {{ len | safe }}
+        window.onload = function() {
+            var a = document.getElementsByTagName("a");
+            var hashes = [];
+            for(var i=0; i < a.length; i++ ) {
+                var indices = [];
+                for(var j=0; j < k; j++) {
+                    indices.push(murmurhash2(a[i].href, offsets[j]) % len);
+                }
+                hashes.push(indices);
+            }
+            console.log(hashes);
+        }
+    </script>
+</head>
+<body>
+<h1>Julius Caesar</h1>
+Gaius Julius Caesar (12 July 100 BC – 15 March 44 BC), was a 
+<a href="https://www.history.com/topics/ancient-rome/ancient-rome">Roman</a> general and statesman.
+A member of the <a href="https://www.worldhistory.org/First_Triumvirate/">First Triumvirate</a>, 
+Caesar led the Roman armies in the <a href="http://classics.mit.edu/Caesar/gallic.1.1.html">Gallic Wars</a> before defeating 
+his political rival <a href="https://www.britannica.com/biography/Pompey-the-Great">Pompey</a> in a civil war, 
+and subsequently became dictator from 49 BC until his assassination in 44 BC.
+</body>
+</html>
