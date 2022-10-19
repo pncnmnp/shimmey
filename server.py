@@ -8,12 +8,13 @@ app = Flask(
     __name__, template_folder="./flask/templates/", static_folder="./flask/static/"
 )
 
-LEN = 2**16
+LEN = 2**20
+K = 5
 
 
 @app.route("/")
 def home():
-    return render_template("index.html", k=3, offsets=[0, 10, 15], len=LEN)
+    return render_template("index.html", k=K, offsets=[0, 10, 15], len=LEN)
 
 
 @app.route("/main", methods=["POST"])
@@ -60,15 +61,12 @@ def pir(random_subset):
         for bit in inter:
             bit_val = bit ^ bit_val
         PIR_column.append(str(bit_val))
-    print(PIR_column, random_subset, bf.bvector)
     return "".join(PIR_column)
 
 
 def malicious_urls(path="./malicious_urls.csv"):
     df = pd.read_csv(path)
-    capacity = LEN
-    hash_functions = 3
-    bf = BloomFilter(m=capacity, k=hash_functions)
+    bf = BloomFilter(m=LEN, k=K)
     for url in df["Domain"]:
         bf.add(url)
     return bf

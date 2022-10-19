@@ -13,7 +13,7 @@
         var len = {{ len | safe }}
 
         function hashURL(url) {
-            var is_malicious = [];
+            var malicious_bits = [];
             var indices = [];
             const { hostname } = new URL(url);
             for (var j = 0; j < k; j++) {
@@ -26,7 +26,7 @@
                     break;
                 }
             }
-            for (var iter = 0; iter < 3; iter++) {
+            for (var iter = 0; iter < k; iter++) {
                 var columns = [];
                 let x = Math.floor(indices[iter] / Math.sqrt(len));
                 let y = (Math.sqrt(len) - 1) - (indices[iter] % Math.sqrt(len));
@@ -68,9 +68,18 @@
                 for (var i = 1; i < columns.length; i++) {
                     bit = bit ^ parseInt(columns[i]);
                 }
-                is_malicious.push(bit);
+                malicious_bits.push(bit);
             }
-            window.alert(is_malicious);
+            is_malicious = true;
+            for (var i = 0; i < malicious_bits.length; i++) {
+                is_malicious = is_malicious & malicious_bits[i];
+            }
+            if (is_malicious) {
+                window.alert("Link is malicious");
+            }
+            else {
+                window.alert("Link is safe");
+            }
             return indices;
         }
         window.onload = function () {
