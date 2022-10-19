@@ -2,13 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <style>
-        body {
-            max-width: 38rem;
-            padding: 2rem;
-            margin: auto;
-        }
-    </style>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
     <script src="{{ url_for('static', filename='murmur.js') }}"></script>
     <script type="text/javascript">
         var k = {{ k | safe }}
@@ -20,7 +14,20 @@
             for(var j=0; j < k; j++) {
                 indices.push(murmurhash2(url, offsets[j]) % len);
             }
-            window.alert(indices);
+            // window.alert(indices);
+            $.ajax({
+                type: 'POST',
+                url: '/path',
+                contentType: "application/json",
+                data: JSON.stringify({data: indices}),
+                dataType: "json",
+                success: function(response) {
+                    console.log(response);
+                },
+                error: function(err) {
+                    console.log(err);
+                }
+            });
             return indices;
         }
         window.onload = function() {
@@ -33,6 +40,13 @@
             }
         }
     </script>
+    <style>
+        body {
+            max-width: 38rem;
+            padding: 2rem;
+            margin: auto;
+        }
+    </style>
 </head>
 <body>
 <h1>Julius Caesar</h1>
