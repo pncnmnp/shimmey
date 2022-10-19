@@ -1,9 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+    <script
+        src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
     <script src="{{ url_for('static', filename='murmur.js') }}"></script>
+    <script src="{{ url_for('static', filename='BitSet.js') }}"></script>
     <script type="text/javascript">
         var k = {{ k | safe }}
         var offsets = {{ offsets | safe }}
@@ -11,31 +14,31 @@
 
         function hashURL(url) {
             var indices = [];
-            for(var j=0; j < k; j++) {
+            for (var j = 0; j < k; j++) {
                 indices.push(murmurhash2(url, offsets[j]) % len);
             }
-            // window.alert(indices);
+            let bitarray = new BitSet.Random(Math.sqrt(len));
             $.ajax({
                 type: 'POST',
-                url: '/path',
+                url: '/main',
                 contentType: "application/json",
-                data: JSON.stringify({data: indices}),
+                data: JSON.stringify({ data: bitarray.toString() }),
                 dataType: "json",
-                success: function(response) {
+                success: function (response) {
                     console.log(response);
                 },
-                error: function(err) {
+                error: function (err) {
                     console.log(err);
                 }
             });
             return indices;
         }
-        window.onload = function() {
+        window.onload = function () {
             var a = document.getElementsByClassName("a");
-            for(var i=0; i<a.length; i++) {
+            for (var i = 0; i < a.length; i++) {
                 var url = a[i].href;
-                (function(i, url) {
-                    a[i].addEventListener('click', function() {hashURL(url);}, false);
+                (function (i, url) {
+                    a[i].addEventListener('click', function () { hashURL(url); }, false);
                 })(i, url);
             }
         }
@@ -48,13 +51,22 @@
         }
     </style>
 </head>
+
 <body>
-<h1>Julius Caesar</h1>
-Gaius Julius Caesar (12 July 100 BC – 15 March 44 BC), was a 
-<a class="a" href=".">Roman</a> general and statesman.
-A member of the <a class="a" href="https://www.worldhistory.org/First_Triumvirate/">First Triumvirate</a>, 
-Caesar led the Roman armies in the <a class="a" href="http://classics.mit.edu/Caesar/gallic.1.1.html">Gallic Wars</a> before defeating 
-his political rival <a class="a" href="https://www.britannica.com/biography/Pompey-the-Great">Pompey</a> in a civil war, 
-and subsequently became dictator from 49 BC until his assassination in 44 BC.
+    <h1>Julius Caesar</h1>
+    Gaius Julius Caesar (12 July 100 BC – 15 March 44 BC), was a
+    <a class="a" href=".">Roman</a> general and statesman.
+    A member of the <a class="a"
+        href="https://www.worldhistory.org/First_Triumvirate/">First
+        Triumvirate</a>,
+    Caesar led the Roman armies in the <a class="a"
+        href="http://classics.mit.edu/Caesar/gallic.1.1.html">Gallic Wars</a>
+    before defeating
+    his political rival <a class="a"
+        href="https://www.britannica.com/biography/Pompey-the-Great">Pompey</a>
+    in a civil war,
+    and subsequently became dictator from 49 BC until his assassination in 44
+    BC.
 </body>
+
 </html>
