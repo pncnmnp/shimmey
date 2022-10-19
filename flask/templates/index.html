@@ -17,15 +17,24 @@
             for (var j = 0; j < k; j++) {
                 indices.push(murmurhash2(url, offsets[j]) % len);
             }
+            // Store the columns received
+            var columns = [];
             let bitarray = new BitSet.Random(Math.sqrt(len));
+            while (true) {
+                bitarray = new BitSet.Random(Math.sqrt(len));
+                if (bitarray.toString().length == Math.sqrt(len)) {
+                    break;
+                }
+            }
             $.ajax({
                 type: 'POST',
                 url: '/main',
+                async: false,
                 contentType: "application/json",
                 data: JSON.stringify({ data: bitarray.toString() }),
                 dataType: "json",
                 success: function (response) {
-                    console.log(response);
+                    columns.push(response.data);
                 },
                 error: function (err) {
                     console.log(err);

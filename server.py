@@ -1,5 +1,5 @@
 from bitarray import bitarray
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, jsonify
 from math import sqrt
 import pandas as pd
 from pybloom import BloomFilter
@@ -11,23 +11,23 @@ app = Flask(
 
 @app.route("/")
 def home():
-    return render_template("index.html", k=3, offsets=[0, 10, 15], len=10**6)
+    return render_template("index.html", k=3, offsets=[0, 10, 15], len=2**20)
 
 
 @app.route("/main", methods=["POST"])
 def main_server():
     data = request.get_json()["data"]
     random_subset = bitarray(data, endian="little")
-    column = pir(random_subset)
-    return column
+    column = {"data": pir(random_subset)}
+    return column, 200
 
 
 @app.route("/sec", methods=["POST"])
 def sec_server():
     data = request.get_json()["data"]
     random_subset = bitarray(data, endian="little")
-    column = pir(random_subset)
-    return column
+    column = {"data": pir(random_subset)}
+    return column, 200
 
 
 def pir(random_subset):
@@ -45,7 +45,7 @@ def pir(random_subset):
 
 def malicious_urls(path="./malicious_urls.csv"):
     df = pd.read_csv(path)
-    bf = BloomFilter(capacity=10**6, error_rate=0.001)
+    bf = BloomFilter(capacity=2**20, error_rate=0.001)
     for url in df["Domain"]:
         bf.add(url)
     return bf
