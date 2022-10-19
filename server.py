@@ -35,12 +35,18 @@ def pir(random_subset):
     skip = int(sqrt(bf.capacity))
     PIR_column = []
     for i in range(0, bf.capacity, skip):
-        inter = bf.bitarray[i : i + skip] ^ random_subset
+        try:
+            inter = bf.bitarray[i : i + skip] ^ random_subset
+        except:
+            print(len(bf.bitarray[i : i + skip]), len(random_subset), bf.capacity, skip)
         bit_val = 0
         for bit in inter:
             bit_val = bit ^ bit_val
-        PIR_column.append(str(bit_val))
-    return "".join(PIR_column)
+        PIR_column.append(bit_val)
+    final_bit = 0
+    for bit in PIR_column:
+        final_bit = final_bit ^ bit
+    return str(final_bit)
 
 
 def malicious_urls(path="./malicious_urls.csv"):

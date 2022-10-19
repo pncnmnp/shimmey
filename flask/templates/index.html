@@ -13,11 +13,12 @@
         var len = {{ len | safe }}
 
         function hashURL(url) {
+            var is_malicious = [];
             var indices = [];
+            const { hostname } = new URL(url);
             for (var j = 0; j < k; j++) {
-                indices.push(murmurhash2(url, offsets[j]) % len);
+                indices.push(murmurhash2(hostname, offsets[j]) % len);
             }
-            // Store the columns received
             var columns = [];
             let bitarray = new BitSet.Random(Math.sqrt(len));
             while (true) {
@@ -26,20 +27,48 @@
                     break;
                 }
             }
-            $.ajax({
-                type: 'POST',
-                url: '/main',
-                async: false,
-                contentType: "application/json",
-                data: JSON.stringify({ data: bitarray.toString() }),
-                dataType: "json",
-                success: function (response) {
-                    columns.push(response.data);
-                },
-                error: function (err) {
-                    console.log(err);
+            for (var iter = 0; iter < k; iter++) {
+                $.ajax({
+                    type: 'POST',
+                    url: '/main',
+                    async: false,
+                    contentType: "application/json",
+                    data: JSON.stringify({ data: bitarray.toString() }),
+                    dataType: "json",
+                    success: function (response) {
+                        columns.push(response.data);
+                    },
+                    error: function (err) {
+                        console.log(err);
+                    }
+                });
+                let indexarray = new BitSet;
+                let y = indices[iter] % Math.sqrt(len);
+                indexarray.set(y, 1);
+
+                let final_bitarray = indexarray.xor(bitarray);
+                final_bitarray = final_bitarray.toString();
+                $.ajax({
+                    type: 'POST',
+                    url: '/sec',
+                    async: false,
+                    contentType: "application/json",
+                    data: JSON.stringify({ data: final_bitarray }),
+                    dataType: "json",
+                    success: function (response) {
+                        columns.push(response.data);
+                    },
+                    error: function (err) {
+                        console.log(err);
+                    }
+                });
+                var bit = columns[0];
+                for (var i = 1; i < columns.length; i++) {
+                    bit = bit ^ columns[i];
                 }
-            });
+                is_malicious.push(bit);
+            }
+            window.alert(is_malicious);
             return indices;
         }
         window.onload = function () {
