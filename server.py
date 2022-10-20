@@ -9,7 +9,7 @@ from bloom import BloomFilter
 app = Flask(
     __name__, template_folder="./flask/templates/", static_folder="./flask/static/"
 )
-# app.wsgi_app = ProfilerMiddleware(app.wsgi_app, restrictions=[30])
+# app.wsgi_app = ProfilerMiddleware(app.wsgi_app, restrictions=[5])
 
 LEN = 2**20
 K = 5
@@ -50,9 +50,7 @@ def pir(random_subset):
     PIR_column = []
     for i in range(0, capacity, skip):
         inter = bf.bvector[i : i + skip] & random_subset
-        bit_val = 0
-        for bit in inter:
-            bit_val = bit ^ bit_val
+        bit_val = sum(inter) % 2
         PIR_column.append(str(bit_val))
     return "".join(PIR_column)
 
