@@ -45,11 +45,11 @@ def padding(data):
 
 def pir(random_subset):
     bf = BF
-    capacity = len(bf.bvector)
+    capacity = len(bf.bitvector)
     skip = int(sqrt(capacity))
     PIR_column = []
     for i in range(0, capacity, skip):
-        inter = bf.bvector[i : i + skip] & random_subset
+        inter = bf.bitvector[i : i + skip] & random_subset
         bit_val = sum(inter) % 2
         PIR_column.append(str(bit_val))
     return "".join(PIR_column)
@@ -57,7 +57,7 @@ def pir(random_subset):
 
 def malicious_urls(path="./malicious_urls.csv"):
     df = pd.read_csv(path)
-    bf = BloomFilter(m=LEN, k=K)
+    bf = BloomFilter(size=LEN, no_hash_fns=K)
     for url in df["Domain"]:
         bf.add(url)
     return bf
