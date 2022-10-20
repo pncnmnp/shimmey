@@ -4,9 +4,12 @@ from math import sqrt
 import pandas as pd
 from bloom import BloomFilter
 
+# from werkzeug.middleware.profiler import ProfilerMiddleware
+
 app = Flask(
     __name__, template_folder="./flask/templates/", static_folder="./flask/static/"
 )
+# app.wsgi_app = ProfilerMiddleware(app.wsgi_app, restrictions=[30])
 
 LEN = 2**20
 K = 5
@@ -40,23 +43,13 @@ def padding(data):
     return "0" * padding + data
 
 
-def dot(x, y):
-    if len(x) != len(y):
-        print("ERROR: ", len(x), len(y))
-        raise ValueError
-    inter = []
-    for i in range(len(x)):
-        inter.append(x[i] * y[i])
-    return inter
-
-
 def pir(random_subset):
-    bf = malicious_urls()
+    bf = BF
     capacity = len(bf.bvector)
     skip = int(sqrt(capacity))
     PIR_column = []
     for i in range(0, capacity, skip):
-        inter = dot(bf.bvector[i : i + skip], random_subset)
+        inter = bf.bvector[i : i + skip] & random_subset
         bit_val = 0
         for bit in inter:
             bit_val = bit ^ bit_val
@@ -70,3 +63,6 @@ def malicious_urls(path="./malicious_urls.csv"):
     for url in df["Domain"]:
         bf.add(url)
     return bf
+
+
+BF = malicious_urls()
