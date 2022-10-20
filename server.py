@@ -19,7 +19,7 @@ app = Flask(
 # app.wsgi_app = ProfilerMiddleware(app.wsgi_app, restrictions=[5])
 
 LEN = 2**20
-K = 5
+K = 3
 
 
 @app.route("/")
