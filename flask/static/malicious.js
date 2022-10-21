@@ -39,7 +39,6 @@ function PIR(indices, iter, bitarray) {
 }
 
 async function hashURL(url) {
-  var malicious_bits = [];
   var indices = [];
   const { hostname } = new URL(url);
   for (var j = 0; j < k; j++) {
@@ -52,13 +51,13 @@ async function hashURL(url) {
       break;
     }
   }
+  var is_malicious = true;
   for (var iter = 0; iter < k; iter++) {
     var bit = await PIR(indices, iter, bitarray);
-    malicious_bits.push(bit);
-  }
-  is_malicious = true;
-  for (var i = 0; i < malicious_bits.length; i++) {
-    is_malicious = is_malicious & malicious_bits[i];
+    if (!bit) {
+      is_malicious = false;
+      break;
+    }
   }
   if (is_malicious) {
     window.alert("Link is malicious");
