@@ -53,6 +53,8 @@ Therefore, such schemes are not optimal.
 To solve the problem of enabling end-to-end privacy during link-shimming, **we propose using a variant of the K-server PIR scheme** - a 2-server PIR architecture that contains an `O(n^0.5)` communication overhead.
 
 ## Our approach
+![Screen Shot 2022-12-16 at 1 18 55 AM](https://user-images.githubusercontent.com/24948340/208035191-5c5971e3-b69b-423f-8a6a-c82811a41807.png)
+
 As the name suggests, this architecture requires 2 non-malicious servers. 
 Each server will store the bloom filter (this is a bit-array with `m` bits) which encodes the list of malicious servers (for simplicity, we call this list a database). 
 This information is then queried by a particular client using PIR. 
